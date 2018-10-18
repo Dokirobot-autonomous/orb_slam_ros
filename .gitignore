@@ -1,0 +1,7 @@
+# いらないフォルダ
+devel
+build
+
+# いらないファイルa
+ORBvoc.txt
+
