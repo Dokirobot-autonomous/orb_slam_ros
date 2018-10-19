@@ -279,7 +279,7 @@ int Optimizer::PoseOptimization(Frame *pFrame)
 
     for(int i=0; i<N; i++)
     {
-        MapPoint* pMP = pFrame->mvpMapPoints[i];
+        MapPoint* pMP = pFrame->mvpMapPoints[i];    // MapPoint*はポインタ : pMPをいじったら大元も変更される
         if(pMP)
         {
             // Monocular observation
@@ -345,7 +345,7 @@ int Optimizer::PoseOptimization(Frame *pFrame)
                 e->cx = pFrame->cx;
                 e->cy = pFrame->cy;
                 e->bf = pFrame->mbf;
-                cv::Mat Xw = pMP->GetWorldPos();
+                cv::Mat Xw = pMP->GetWorldPos(); // 特徴量の3次元座標
                 e->Xw[0] = Xw.at<float>(0);
                 e->Xw[1] = Xw.at<float>(1);
                 e->Xw[2] = Xw.at<float>(2);
