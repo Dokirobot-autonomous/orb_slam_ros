@@ -97,7 +97,8 @@ private:
     
     image_transport::Publisher DrawFrame_pub_;
     tf::TransformBroadcaster Vehicle2Ground_broadcaster_;
-    
+    tf::TransformBroadcaster FusionMap2OrbMap_broadcaster_;
+
     //tf::TransformBroadcaster broadcaster;
     ros::NodeHandle nh;
     

@@ -85,7 +85,7 @@ void SlamDataPub::TrackingDataPub()
 	      Vehicle2Ground_broadcaster_.sendTransform(
 		  tf::StampedTransform(
 		  tf::Transform(tf::Quaternion(tf_q_x,tf_q_y,tf_q_z,tf_q_w), tf::Vector3(tf_x, tf_y, tf_z)),
-		  ros::Time::now(),"ground", "vehicle"));   
+		  ros::Time::now(),"orb_map", "vehicle"));
 	    
 	  }
 	  if(CheckFinish())
@@ -258,7 +258,7 @@ void SlamDataPub::GetCurrentROSCameraMatrix(geometry_msgs::PoseStamped &cam_pose
 	  cam_pose.pose.orientation.z = q.z();
 	  cam_pose.pose.orientation.w = q.w();
 	  
-	  cam_pose.header.frame_id = "ground";
+	  cam_pose.header.frame_id = "orb_map";
 	  cam_pose.header.stamp = ros::Time::now();  
 	  
 	  mbGetNewCamPose = false;
@@ -288,7 +288,7 @@ void SlamDataPub::GetCurrentROSVehicleMatrix(geometry_msgs::PoseStamped &vehicle
 	vehicle_pose.pose.orientation.z = q.z();
 	vehicle_pose.pose.orientation.w = q.w();
 	
-	vehicle_pose.header.frame_id = "ground";
+	vehicle_pose.header.frame_id = "orb_map";
 	vehicle_pose.header.stamp = ros::Time::now();  	
       }
 }
@@ -338,9 +338,9 @@ void SlamDataPub::GetCurrentROSTrajectories(nav_msgs::Path &cam_path, nav_msgs::
 	      vehicle_path_temp.poses.push_back(vehicle_pose);
 	      cam_path_temp.poses.push_back(cam_pose);	     
 	  }
- 	  cam_path_temp.header.frame_id = "ground";
+ 	  cam_path_temp.header.frame_id = "orb_map";
  	  cam_path_temp.header.stamp = ros::Time::now();   
-	  vehicle_path_temp.header.frame_id = "ground";
+	  vehicle_path_temp.header.frame_id = "orb_map";
 	  vehicle_path_temp.header.stamp = ros::Time::now(); 
 	  
 	  cam_path = cam_path_temp;
@@ -385,7 +385,7 @@ void SlamDataPub::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all_poin
     pcl::PCLPointCloud2 pcl_pc1;
     pcl::toPCLPointCloud2(*cloud_all, pcl_pc1);    // pcl::PointXYZRGBA -> pcl::PCLPointCloud2
     pcl_conversions::fromPCL(pcl_pc1, all_point_cloud);  // pcl::PCLPointCloud2 -> sensor_msgs::PointCloud2
-    all_point_cloud.header.frame_id = "ground";  
+    all_point_cloud.header.frame_id = "orb_map";
     all_point_cloud.header.stamp = ros::Time::now();   
   
     for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
@@ -412,7 +412,7 @@ void SlamDataPub::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all_poin
     pcl::PCLPointCloud2 pcl_pc2;
     pcl::toPCLPointCloud2(*cloud_ref, pcl_pc2); // pcl::PointXYZRGBA -> pcl::PCLPointCloud2
     pcl_conversions::fromPCL(pcl_pc2, ref_point_cloud);  // pcl::PCLPointCloud2 -> sensor_msgs::PointCloud2
-    ref_point_cloud.header.frame_id = "ground";
+    ref_point_cloud.header.frame_id = "orb_map";
     ref_point_cloud.header.stamp = ros::Time::now();   
 
 }
