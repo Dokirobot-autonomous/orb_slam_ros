@@ -268,6 +268,7 @@ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp)
     return mCurrentFrame.mTcw.clone();
 }
 
+// Trackingのメイン関数
 void Tracking::Track()
 {
     if(mState==NO_IMAGES_YET)
@@ -336,7 +337,7 @@ void Tracking::Track()
             {
                 if(!mbVO)
                 {
-                    // In last frame we tracked enough MapPoints in the map
+                    // In last frame we tracked enough MapPoints in the map (位置推定)
 
                     if(!mVelocity.empty())
                     {
@@ -372,7 +373,7 @@ void Tracking::Track()
                     if(bOKMM && !bOKReloc)
                     {
                         mCurrentFrame.SetPose(TcwMM);
-                        mCurrentFrame.mvpMapPoints = vpMPsMM;
+                        mCurrentFrame.mvpMapPoints = vpMPsMM; // 現在の画像中の特徴量?
                         mCurrentFrame.mvbOutlier = vbOutMM;
 
                         if(mbVO)
@@ -381,7 +382,7 @@ void Tracking::Track()
                             {
                                 if(mCurrentFrame.mvpMapPoints[i] && !mCurrentFrame.mvbOutlier[i])
                                 {
-                                    mCurrentFrame.mvpMapPoints[i]->IncreaseFound();
+                                    mCurrentFrame.mvpMapPoints[i]->IncreaseFound(); // Outlier以外の特徴量が見つかった数を1(default)追加
                                 }
                             }
                         }
@@ -436,7 +437,9 @@ void Tracking::Track()
                 mVelocity = cv::Mat();
 
             mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
-	    mpSlamDataPub->SetCurrentCameraPose(mCurrentFrame.mTcw);
+	    mpSlamDataPub->SetCurrentCameraPose(mCurrentFrame.mTcw);    // Publish用のPose格納
+
+	    // ここにNewPoseのSubscribeを追加?
 	    
             // Clean VO matches
             for(int i=0; i<mCurrentFrame.N; i++)
@@ -460,7 +463,7 @@ void Tracking::Track()
 
             // Check if we need to insert a new keyframe
             if(NeedNewKeyFrame())
-                CreateNewKeyFrame();
+                CreateNewKeyFrame();    // 新しいPointをmpMapに追加（修正するならここ?）
 
             // We allow points with high innovation (considererd outliers by the Huber Function)
             // pass to the new keyframe, so that bundle adjustment will finally decide
@@ -536,7 +539,7 @@ void Tracking::StereoInitialization()
                 pKFini->AddMapPoint(pNewMP,i);
                 pNewMP->ComputeDistinctiveDescriptors();
                 pNewMP->UpdateNormalAndDepth();
-                mpMap->AddMapPoint(pNewMP);
+                mpMap->AddMapPoint(pNewMP); // 初期Pointの追加
 
                 mCurrentFrame.mvpMapPoints[i]=pNewMP;
             }
@@ -775,9 +778,9 @@ bool Tracking::TrackReferenceKeyFrame()
         return false;
 
     mCurrentFrame.mvpMapPoints = vpMapPointMatches;
-    mCurrentFrame.SetPose(mLastFrame.mTcw);
+    mCurrentFrame.SetPose(mLastFrame.mTcw); // 過去の推定位置を代入
 
-    Optimizer::PoseOptimization(&mCurrentFrame);
+    Optimizer::PoseOptimization(&mCurrentFrame);    // 推定位置を最適化
 
     // Discard outliers
     int nmatchesMap = 0;
@@ -1121,7 +1124,7 @@ void Tracking::CreateNewKeyFrame()
                     pKF->AddMapPoint(pNewMP,i);
                     pNewMP->ComputeDistinctiveDescriptors();
                     pNewMP->UpdateNormalAndDepth();
-                    mpMap->AddMapPoint(pNewMP);
+                    mpMap->AddMapPoint(pNewMP); // 新しいMapPointを追加
 
                     mCurrentFrame.mvpMapPoints[i]=pNewMP;
                     nPoints++;

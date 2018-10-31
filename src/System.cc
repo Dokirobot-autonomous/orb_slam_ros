@@ -160,7 +160,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
     }
     }
 
-    cv::Mat Tcw = mpTracker->GrabImageStereo(imLeft,imRight,timestamp);
+    cv::Mat Tcw = mpTracker->GrabImageStereo(imLeft,imRight,timestamp); // Camera Poseを算出（デフォルトでは使用されていない）
 
     unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;

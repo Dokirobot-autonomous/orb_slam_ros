@@ -1,0 +1,8 @@
+# いらないフォルダ
+devel
+build
+cmake-build-debug
+
+# いらないファイルa
+ORBvoc.txt
+

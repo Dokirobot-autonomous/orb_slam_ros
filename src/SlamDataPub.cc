@@ -4,6 +4,8 @@
 * Final Edit: 2017-06-20
 */
 
+/* カメラのPoseデータはTracking.ccの "mpSlamDataPub->SetCurrentCameraPose" から取得 */
+
 #include "SlamDataPub.h"
 
 //Eigen
